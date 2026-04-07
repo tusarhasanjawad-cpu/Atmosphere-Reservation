@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atmosphere | Pre-Booked Restaurant</title>
+    <style>
+        :root { --gold: #c5a059; --dark: #1a1a1a; }
+        body { font-family: 'Arial', sans-serif; background-color: #121212; color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: var(--dark); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; border: 1px solid #333; }
+        h1 { color: var(--gold); text-align: center; margin-top: 0; letter-spacing: 2px; }
+        p.info { text-align: center; font-size: 0.9em; color: #bbb; margin-bottom: 30px; line-height: 1.6; }
+        label { display: block; margin: 15px 0 5px; font-size: 0.85em; color: var(--gold); text-transform: uppercase; }
+        input { width: 100%; padding: 12px; background: #222; border: 1px solid #444; border-radius: 5px; color: white; box-sizing: border-box; }
+        input:focus { border-color: var(--gold); outline: none; }
+        .btn { width: 100%; background: var(--gold); color: black; border: none; padding: 15px; border-radius: 5px; font-weight: bold; font-size: 1em; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .btn:hover { background: #e2b86a; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>ATMOSPHERE</h1>
+    <p class="info">
+        Foys Lake Gate, Chittagong<br>
+        Open: 1:00 PM — 10:30 PM<br>
+        <em>*Pre-booking required</em>
+    </p>
+
+    <form id="resForm">
+        <label>Full Name *</label>
+        <input type="text" id="name" required>
+
+        <label>Phone Number *</label>
+        <input type="tel" id="phone" required>
+
+        <label>Number of Pax *</label>
+        <input type="number" id="pax" min="1" required>
+
+        <label>Arrival Date *</label>
+        <input type="date" id="date" required>
+
+        <label>Arrival Time *</label>
+        <input type="time" id="time" required>
+
+        <label>Address (Optional)</label>
+        <input type="text" id="address">
+
+        <button type="button" class="btn" onclick="sendToWhatsapp()">RESERVE NOW</button>
+    </form>
+</div>
+
+<script>
+    function sendToWhatsapp() {
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const pax = document.getElementById('pax').value;
+        const date = document.getElementById('date').value;
+        const time = document.getElementById('time').value;
+        const address = document.getElementById('address').value || "Not provided";
+
+        if(!name || !phone || !pax || !date || !time) {
+            alert("Please fill in all mandatory fields.");
+            return;
+        }
+
+        const message = `*New Reservation: Atmosphere*%0A` +
+                        `--------------------------%0A` +
+                        `*Guest:* ${name}%0A` +
+                        `*Phone:* ${phone}%0A` +
+                        `*Pax:* ${pax}%0A` +
+                        `*Date:* ${date}%0A` +
+                        `*Time:* ${time}%0A` +
+                        `*Address:* ${address}`;
+
+        window.open(`https://wa.me/8801830365120?text=${message}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
