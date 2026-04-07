@@ -3,77 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atmosphere | Pre-Booked Restaurant</title>
+    <title>Atmosphere | Reservation</title>
     <style>
         :root { --gold: #c5a059; --dark: #1a1a1a; }
-        body { font-family: 'Arial', sans-serif; background-color: #121212; color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: var(--dark); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; max-width: 400px; border: 1px solid #333; }
-        h1 { color: var(--gold); text-align: center; margin-top: 0; letter-spacing: 2px; }
-        p.info { text-align: center; font-size: 0.9em; color: #bbb; margin-bottom: 30px; line-height: 1.6; }
-        label { display: block; margin: 15px 0 5px; font-size: 0.85em; color: var(--gold); text-transform: uppercase; }
-        input { width: 100%; padding: 12px; background: #222; border: 1px solid #444; border-radius: 5px; color: white; box-sizing: border-box; }
-        input:focus { border-color: var(--gold); outline: none; }
-        .btn { width: 100%; background: var(--gold); color: black; border: none; padding: 15px; border-radius: 5px; font-weight: bold; font-size: 1em; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        .btn:hover { background: #e2b86a; transform: translateY(-2px); }
+        body { font-family: 'Arial', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; max-width: 450px; width: 100%; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid var(--gold); }
+        h1 { text-align: center; color: var(--dark); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        .address { text-align: center; font-size: 0.9em; color: #666; margin-bottom: 20px; }
+        .note { background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; font-size: 0.85em; margin-bottom: 20px; line-height: 1.4; border: 1px solid #ffeeba; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: var(--dark); font-size: 0.9em; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; background: var(--dark); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        button:hover { background: var(--gold); }
+        .footer-info { font-size: 0.8em; text-align: center; color: #888; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>ATMOSPHERE</h1>
-    <p class="info">
-        Foys Lake Gate, Chittagong<br>
-        Open: 1:00 PM — 10:30 PM<br>
-        <em>*Pre-booking required</em>
-    </p>
+    <h1>Atmosphere</h1>
+    <div class="address">Foys Lake Gate, Chittagong</div>
+
+    <div class="note">
+        <strong>Note:</strong> Your reservation request will be pending until our representative replies or confirms you.
+    </div>
 
     <form id="resForm">
         <label>Full Name *</label>
-        <input type="text" id="name" required>
+        <input type="text" id="name" required placeholder="Ex: Rahim Uddin">
 
         <label>Phone Number *</label>
-        <input type="tel" id="phone" required>
+        <input type="tel" id="phone" required placeholder="01XXXXXXXXX">
 
         <label>Number of Pax *</label>
-        <input type="number" id="pax" min="1" required>
+        <input type="number" id="pax" min="1" required placeholder="How many people?">
 
-        <label>Arrival Date *</label>
+        <label>Arrival Date * (Today + next 2 days)</label>
         <input type="date" id="date" required>
 
-        <label>Arrival Time *</label>
-        <input type="time" id="time" required>
+        <label>Arrival Time * (1:00 PM - 10:30 PM)</label>
+        <input type="time" id="time" min="13:00" max="22:30" required>
 
         <label>Address (Optional)</label>
-        <input type="text" id="address">
+        <input type="text" id="address" placeholder="Your location">
 
-        <button type="button" class="btn" onclick="sendToWhatsapp()">RESERVE NOW</button>
+        <button type="button" onclick="validateAndSend()">RESERVE NOW</button>
     </form>
+
+    <div class="footer-info">
+        Operating Hours: 1:00 PM - 10:30 PM
+    </div>
 </div>
 
 <script>
-    function sendToWhatsapp() {
+    // Set date constraints: Today to Today + 2 days
+    const dateInput = document.getElementById('date');
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 2);
+
+    const formatDate = (d) => d.toISOString().split('T')[0];
+
+    dateInput.min = formatDate(today);
+    dateInput.max = formatDate(maxDate);
+
+    function validateAndSend() {
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const pax = document.getElementById('pax').value;
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
-        const address = document.getElementById('address').value || "Not provided";
+        const address = document.getElementById('address').value;
 
         if(!name || !phone || !pax || !date || !time) {
             alert("Please fill in all mandatory fields.");
             return;
         }
 
-        const message = `*New Reservation: Atmosphere*%0A` +
+        // WhatsApp formatting
+        const wpNumber = "8801830365120";
+        const message = `*New Reservation Request - Atmosphere*%0A` +
                         `--------------------------%0A` +
-                        `*Guest:* ${name}%0A` +
+                        `*Name:* ${name}%0A` +
                         `*Phone:* ${phone}%0A` +
                         `*Pax:* ${pax}%0A` +
                         `*Date:* ${date}%0A` +
                         `*Time:* ${time}%0A` +
-                        `*Address:* ${address}`;
+                        `*Address:* ${address || 'Not provided'}%0A` +
+                        `--------------------------%0A` +
+                        `_Please confirm this booking._`;
 
-        window.open(`https://wa.me/8801830365120?text=${message}`, '_blank');
+        const url = `https://wa.me/${wpNumber}?text=${message}`;
+        window.open(url, '_blank').focus();
     }
 </script>
 
