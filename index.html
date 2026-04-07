@@ -3,69 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atmosphere | Reservation</title>
+    <title>Atmosphere | Table Reservation</title>
     <style>
-        :root { --gold: #c5a059; --dark: #1a1a1a; }
-        body { font-family: 'Arial', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .card { background: white; max-width: 450px; width: 100%; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid var(--gold); }
-        h1 { text-align: center; color: var(--dark); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
-        .address { text-align: center; font-size: 0.9em; color: #666; margin-bottom: 20px; }
-        .note { background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; font-size: 0.85em; margin-bottom: 20px; line-height: 1.4; border: 1px solid #ffeeba; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: var(--dark); font-size: 0.9em; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; background: var(--dark); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
-        button:hover { background: var(--gold); }
-        .footer-info { font-size: 0.8em; text-align: center; color: #888; margin-top: 20px; }
+        :root { --primary: #bc9c22; --dark: #1a1a1a; --light: #f4f4f4; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--dark); color: white; display: flex; justify-content: center; padding: 20px; }
+        .card { background: #222; padding: 30px; border-radius: 15px; border: 1px solid #333; width: 100%; max-width: 400px; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; }
+        p.loc { text-align: center; font-size: 0.85em; color: #aaa; margin-bottom: 20px; }
+        .note { background: #332b00; color: #ffeb3b; padding: 12px; border-radius: 8px; font-size: 0.85em; margin-bottom: 20px; border-left: 4px solid var(--primary); }
+        label { display: block; margin-top: 15px; font-size: 0.9em; color: #ccc; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border-radius: 5px; border: 1px solid #444; background: #111; color: white; box-sizing: border-box; }
+        .btn { width: 100%; background: var(--primary); color: black; border: none; padding: 15px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .btn:hover { background: #d4b43d; }
     </style>
 </head>
 <body>
 
 <div class="card">
     <h1>Atmosphere</h1>
-    <div class="address">Foys Lake Gate, Chittagong</div>
-
+    <p class="loc">Foys Lake Gate, Chittagong</p>
+    
     <div class="note">
-        <strong>Note:</strong> Your reservation request will be pending until our representative replies or confirms you.
+        <strong>Note:</strong> Your reservation request will be pending until our representative replies or confirms with you.
     </div>
 
     <form id="resForm">
         <label>Full Name *</label>
-        <input type="text" id="name" required placeholder="Ex: Rahim Uddin">
+        <input type="text" id="name" required placeholder="John Doe">
 
         <label>Phone Number *</label>
         <input type="tel" id="phone" required placeholder="01XXXXXXXXX">
 
         <label>Number of Pax *</label>
-        <input type="number" id="pax" min="1" required placeholder="How many people?">
+        <input type="number" id="pax" required min="1">
 
-        <label>Arrival Date * (Today + next 2 days)</label>
+        <label>Arrival Date *</label>
         <input type="date" id="date" required>
 
-        <label>Arrival Time * (1:00 PM - 10:30 PM)</label>
-        <input type="time" id="time" min="13:00" max="22:30" required>
+        <label>Arrival Time (1:00 PM - 10:30 PM) *</label>
+        <input type="time" id="time" required>
 
         <label>Address (Optional)</label>
-        <input type="text" id="address" placeholder="Your location">
+        <input type="text" id="address" placeholder="Your area">
 
-        <button type="button" onclick="validateAndSend()">RESERVE NOW</button>
+        <button type="button" class="btn" onclick="validateAndSend()">RESERVE NOW</button>
     </form>
-
-    <div class="footer-info">
-        Operating Hours: 1:00 PM - 10:30 PM
-    </div>
 </div>
 
 <script>
-    // Set date constraints: Today to Today + 2 days
+    // Set Date Constraints (Today + next 2 days)
     const dateInput = document.getElementById('date');
     const today = new Date();
     const maxDate = new Date();
     maxDate.setDate(today.getDate() + 2);
 
-    const formatDate = (d) => d.toISOString().split('T')[0];
-
-    dateInput.min = formatDate(today);
-    dateInput.max = formatDate(maxDate);
+    dateInput.min = today.toISOString().split("T")[0];
+    dateInput.max = maxDate.toISOString().split("T")[0];
 
     function validateAndSend() {
         const name = document.getElementById('name').value;
@@ -76,25 +69,39 @@
         const address = document.getElementById('address').value;
 
         if(!name || !phone || !pax || !date || !time) {
-            alert("Please fill in all mandatory fields.");
+            alert("Please fill all mandatory fields.");
             return;
         }
 
-        // WhatsApp formatting
-        const wpNumber = "8801830365120";
-        const message = `*New Reservation Request - Atmosphere*%0A` +
-                        `--------------------------%0A` +
-                        `*Name:* ${name}%0A` +
-                        `*Phone:* ${phone}%0A` +
-                        `*Pax:* ${pax}%0A` +
-                        `*Date:* ${date}%0A` +
-                        `*Time:* ${time}%0A` +
-                        `*Address:* ${address || 'Not provided'}%0A` +
-                        `--------------------------%0A` +
-                        `_Please confirm this booking._`;
+        // Time Validation
+        const selectedTime = time; 
+        const minTime = "13:00";
+        const maxTime = "22:30";
+        
+        // Check if time is within operating hours
+        if(selectedTime < minTime || selectedTime > maxTime) {
+            alert("Reservations are only allowed between 1:00 PM and 10:30 PM.");
+            return;
+        }
 
-        const url = `https://wa.me/${wpNumber}?text=${message}`;
-        window.open(url, '_blank').focus();
+        // Check if time is in the past (only if date is today)
+        const now = new Date();
+        const currentTime = now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
+        if(date === today.toISOString().split("T")[0] && selectedTime < currentTime) {
+            alert("You cannot book a time that has already passed.");
+            return;
+        }
+
+        const msg = `*Reservation Request: Atmosphere*%0A` +
+                    `--------------------------%0A` +
+                    `*Name:* ${name}%0A` +
+                    `*Phone:* ${phone}%0A` +
+                    `*Pax:* ${pax}%0A` +
+                    `*Date:* ${date}%0A` +
+                    `*Time:* ${time}%0A` +
+                    `*Address:* ${address || 'N/A'}`;
+
+        window.open(`https://wa.me/8801830365120?text=${msg}`, '_blank');
     }
 </script>
 
